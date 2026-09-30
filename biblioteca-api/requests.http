@@ -1,0 +1,67 @@
+@baseUrl = http://localhost:3000/api/v1
+@authorId = REPLACE_WITH_AUTHOR_ID
+@bookId = REPLACE_WITH_BOOK_ID
+@loanId = REPLACE_WITH_LOAN_ID
+
+### Crear autor
+POST {{baseUrl}}/autor
+Content-Type: application/json
+
+{"name":"Gabriel García Márquez","nationality":"Colombiana","birthYear":1927}
+
+### Listar autores
+GET {{baseUrl}}/autor
+
+### Consultar autor
+GET {{baseUrl}}/autor/{{authorId}}
+
+### Actualizar autor
+PUT {{baseUrl}}/autor/{{authorId}}
+Content-Type: application/json
+
+{"nationality":"Colombiana"}
+
+### Crear libro
+POST {{baseUrl}}/libro
+Content-Type: application/json
+
+{"title":"Cien años de soledad","isbn":"9780307474728","authorId":"{{authorId}}","year":1967}
+
+### Listar libros
+GET {{baseUrl}}/libro
+
+### Consultar libro
+GET {{baseUrl}}/libro/{{bookId}}
+
+### Actualizar libro
+PUT {{baseUrl}}/libro/{{bookId}}
+Content-Type: application/json
+
+{"title":"Cien años de soledad (edición revisada)"}
+
+### Crear préstamo
+POST {{baseUrl}}/prestamo
+Content-Type: application/json
+
+{"bookId":"{{bookId}}","userName":"Ana Pérez","loanDate":"2026-09-28T10:00:00.000Z"}
+
+### Listar préstamos
+GET {{baseUrl}}/prestamo
+
+### Consultar préstamo
+GET {{baseUrl}}/prestamo/{{loanId}}
+
+### Devolver préstamo
+PUT {{baseUrl}}/prestamo/{{loanId}}
+Content-Type: application/json
+
+{"returned":true}
+
+### Eliminar préstamo
+DELETE {{baseUrl}}/prestamo/{{loanId}}
+
+### Eliminar libro
+DELETE {{baseUrl}}/libro/{{bookId}}
+
+### Eliminar autor
+DELETE {{baseUrl}}/autor/{{authorId}}

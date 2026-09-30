@@ -1,0 +1,10 @@
+{
+  "name": "biblioteca-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix biblioteca-api run dev",
+    "build": "npm --prefix biblioteca-api run build",
+    "start": "npm --prefix biblioteca-api start"
+  }
+}
