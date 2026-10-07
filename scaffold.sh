@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # scaffold.sh
-# Genera la estructura base de una API REST (Express 5 + TypeScript + MongoDB)
+# Generates a REST API scaffold (Express 5 + TypeScript + MongoDB)
 # con arquitectura por capas y un módulo "demo" con un CRUD completo.
 #
 # Uso:
@@ -11,7 +11,7 @@
 set -euo pipefail
 
 # ----------------------------------------------------------------------------
-# 1. Preguntar el nombre de la API
+# 1. Ask for the API name
 # ----------------------------------------------------------------------------
 read -rp "¿Cómo se llama la API? (ej: library-api): " API_NAME
 
@@ -24,12 +24,12 @@ if [ -z "${API_NAME}" ]; then
 fi
 
 if [ -e "${API_NAME}" ]; then
-  echo "Ya existe un archivo o carpeta llamado '${API_NAME}'. Aborta." >&2
+  echo "A file or directory named '${API_NAME}' already exists. Aborting." >&2
   exit 1
 fi
 
 echo ""
-echo "Creando el proyecto '${API_NAME}'..."
+echo "Creating project '${API_NAME}'..."
 
 # ----------------------------------------------------------------------------
 # 2. Crear el árbol de carpetas
@@ -131,7 +131,7 @@ npm-debug.log*
 EOF
 
 cat > .env.example <<'EOF'
-# Puerto del servidor HTTP
+# HTTP server port
 PORT=3000
 
 # Entorno de ejecución: development | production | test
@@ -140,7 +140,7 @@ NODE_ENV=development
 # Cadena de conexión de MongoDB (no subir credenciales reales al repo)
 MONGO_URI=mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/?appName=Cluster0
 
-# Nombre de la base de datos
+# Database name
 MONGO_DB_NAME=${API_NAME}
 EOF
 
@@ -164,7 +164,7 @@ dotenv.config();
 const required = (name: string): string => {
     const value = process.env[name];
     if (!value) {
-        throw new Error(`Falta la variable de entorno requerida: ${name}`);
+        throw new Error(`Required environment variable is missing: ${name}`);
     }
     return value;
 };
@@ -188,25 +188,25 @@ export const connectDB = async (): Promise<void> => {
     client = new MongoClient(env.mongoUri);
     await client.connect();
     db = client.db(env.mongoDBName);
-    console.log(`Conectado a MongoDB (db: ${env.mongoDBName})`);
+    console.log(`Connected to MongoDB (database: ${env.mongoDBName})`);
 };
 
 export const getDb = (): Db => {
     if (!db) {
-        throw new Error("La base de datos no ha sido inicializada");
+        throw new Error("The database has not been initialized");
     }
     return db;
 };
 EOF
 
 # ----------------------------------------------------------------------------
-# 5. Capa compartida (errores + middlewares)
+# 5. Shared layer (errors and middleware)
 # ----------------------------------------------------------------------------
 
 cat > src/shared/errors/AppError.ts <<'EOF'
 /**
  * Error operacional de la aplicación. Permite adjuntar un código HTTP
- * para que el middleware de errores devuelva la respuesta adecuada.
+ * 
  */
 export class AppError extends Error {
     public readonly statusCode: number;
@@ -228,7 +228,7 @@ export class BadRequestError extends AppError {
 }
 
 export class NotFoundError extends AppError {
-    constructor(message = "Recurso no encontrado") {
+    constructor(message = "Resource not found") {
         super(message, 404);
     }
 }
@@ -238,7 +238,7 @@ cat > src/shared/middlewares/asyncHandler.ts <<'EOF'
 import { Request, Response, NextFunction, RequestHandler } from "express";
 
 /**
- * Envuelve un controlador async para que cualquier promesa rechazada
+ * Wraps an async controller so rejected promises are forwarded to next()
  * se reenvíe automáticamente a next() y la capture el errorHandler.
  * Es genérico para preservar el tipado de req.params/body del handler.
  */
@@ -266,12 +266,12 @@ import { env } from "../../config/env";
 export const notFound = (req: Request, res: Response): void => {
     res.status(404).json({
         status: "error",
-        message: `Ruta no encontrada: ${req.method} ${req.originalUrl}`,
+        message: `Route not found: ${req.method} ${req.originalUrl}`,
     });
 };
 
 /**
- * Middleware centralizado de errores. Debe registrarse al final,
+ * Centralized error middleware. Register it after all routes.
  * después de las rutas.
  */
 export const errorHandler = (
@@ -284,7 +284,7 @@ export const errorHandler = (
     const message =
         err instanceof AppError || env.nodeEnv !== "production"
             ? err.message
-            : "Error interno del servidor";
+            : "Internal server error";
 
     if (statusCode >= 500) {
         console.error(err);
@@ -397,7 +397,7 @@ export class DemoService {
     async findById(id: string): Promise<Demo> {
         const demo = await this.demoRepository.findById(this.toObjectId(id));
         if (!demo) {
-            throw new NotFoundError("Registro no encontrado");
+            throw new NotFoundError("Record not found");
         }
         return demo;
     }
@@ -410,19 +410,19 @@ export class DemoService {
         if (data.description !== undefined) changes.description = this.requireString(data.description, "description");
         if (data.active !== undefined) {
             if (typeof data.active !== "boolean") {
-                throw new BadRequestError("El campo 'active' debe ser booleano");
+                throw new BadRequestError("Field 'active' must be a boolean");
             }
             changes.active = data.active;
         }
 
         if (Object.keys(changes).length === 0) {
-            throw new BadRequestError("No se enviaron campos para actualizar");
+            throw new BadRequestError("No fields were provided for update");
         }
         changes.updatedAt = new Date();
 
         const updated = await this.demoRepository.update(objectId, changes);
         if (!updated) {
-            throw new NotFoundError("Registro no encontrado");
+            throw new NotFoundError("Record not found");
         }
         return updated;
     }
@@ -430,7 +430,7 @@ export class DemoService {
     async delete(id: string): Promise<void> {
         const deleted = await this.demoRepository.delete(this.toObjectId(id));
         if (!deleted) {
-            throw new NotFoundError("Registro no encontrado");
+            throw new NotFoundError("Record not found");
         }
     }
 
@@ -545,7 +545,7 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/v1", v1Routes);
 
-// Manejo de rutas no encontradas y errores (siempre al final)
+// Not-found and error handling (always registered last)
 app.use(notFound);
 app.use(errorHandler);
 EOF
@@ -559,7 +559,7 @@ const bootstrap = async (): Promise<void> => {
     await connectDB();
 
     app.listen(env.port, () => {
-        console.log(`Servidor corriendo en el puerto ${env.port} [${env.nodeEnv}]`);
+        console.log(`Server listening on port ${env.port} [${env.nodeEnv}]`);
     });
 };
 
@@ -599,23 +599,23 @@ Base URL: \`http://localhost:3000/api/v1/demo\`
 
 | Método | Ruta   | Descripción                  |
 | ------ | ------ | ---------------------------- |
-| POST   | /      | Crea un registro             |
-| GET    | /      | Lista todos los registros    |
-| GET    | /:id   | Obtiene un registro por id   |
-| PUT    | /:id   | Actualiza un registro        |
-| DELETE | /:id   | Elimina un registro          |
+| POST   | /     | Create a record               |
+| GET    | /     | List all records              |
+| GET    | /:id  | Retrieve a record by ID       |
+| PUT    | /:id  | Update a record               |
+| DELETE | /:id  | Delete a record               |
 
 Health check: \`GET /health\`
 EOF
 
 # ----------------------------------------------------------------------------
-# 10. Fin
+# 10. Done
 # ----------------------------------------------------------------------------
 
 echo ""
-echo "Proyecto '${API_NAME}' creado correctamente."
+echo "Project '${API_NAME}' created successfully."
 echo ""
-echo "Siguientes pasos:"
+echo "Next steps:"
 echo "  cd ${API_NAME}"
 echo "  npm install"
 echo "  cp .env.example .env   # ajusta MONGO_URI"

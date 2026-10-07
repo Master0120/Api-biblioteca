@@ -9,12 +9,12 @@ export const connectDB = async (): Promise<void> => {
     await client.connect();
     db = client.db(env.mongoDBName);
     await db.collection("libros").createIndex({ isbn: 1 }, { unique: true });
-    console.log(`Conectado a MongoDB (db: ${env.mongoDBName})`);
+    console.log(`Connected to MongoDB (database: ${env.mongoDBName})`);
 };
 
 export const getDb = (): Db => {
     if (!db) {
-        throw new Error("La base de datos no ha sido inicializada");
+        throw new Error("The database has not been initialized");
     }
     return db;
 };

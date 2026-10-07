@@ -1,6 +1,6 @@
 /**
- * Error operacional de la aplicación. Permite adjuntar un código HTTP
- * para que el middleware de errores devuelva la respuesta adecuada.
+/**
+ * An operational application error with an HTTP status code for the error middleware.
  */
 export class AppError extends Error {
     public readonly statusCode: number;
@@ -16,13 +16,13 @@ export class AppError extends Error {
 }
 
 export class BadRequestError extends AppError {
-    constructor(message = "Solicitud inválida") {
+    constructor(message = "Invalid request") {
         super(message, 400);
     }
 }
 
 export class NotFoundError extends AppError {
-    constructor(message = "Recurso no encontrado") {
+    constructor(message = "Resource not found") {
         super(message, 404);
     }
 }

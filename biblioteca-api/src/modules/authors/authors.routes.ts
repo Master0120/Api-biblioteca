@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { asyncHandler } from "../../shared/middlewares/asyncHandler";
-import { PrestamosController } from "./prestamos.controller";
+import { AuthorsController } from "./authors.controller";
 
 const router = Router();
-const controller = new PrestamosController();
+const controller = new AuthorsController();
 
 router.post("/", asyncHandler(controller.create));
 router.get("/", asyncHandler(controller.findAll));

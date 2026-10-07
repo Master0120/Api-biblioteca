@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export interface Prestamo {
+export interface Loan {
     _id?: ObjectId;
     bookId: ObjectId;
     userName: string;
@@ -11,7 +11,7 @@ export interface Prestamo {
     updatedAt: Date;
 }
 
-export interface PrestamoDTO {
+export interface LoanDTO {
     bookId?: string;
     userName?: string;
     loanDate?: string | Date;

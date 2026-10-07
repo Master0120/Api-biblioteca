@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export interface Autor {
+export interface Author {
     _id?: ObjectId;
     name: string;
     nationality: string;
@@ -9,7 +9,7 @@ export interface Autor {
     updatedAt: Date;
 }
 
-export interface AutorDTO {
+export interface AuthorDTO {
     name?: string;
     nationality?: string;
     birthYear?: number;

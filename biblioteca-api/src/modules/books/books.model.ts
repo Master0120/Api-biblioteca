@@ -1,17 +1,17 @@
 import { ObjectId } from "mongodb";
 
-export interface Libro {
+export interface Book {
     _id?: ObjectId;
     title: string;
     isbn: string;
-    authorId: ObjectId;
+    authorId: ObjectId; // Reference to the author.
     year?: number;
     available: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface LibroDTO {
+export interface BookDTO {
     title?: string;
     isbn?: string;
     authorId?: string;

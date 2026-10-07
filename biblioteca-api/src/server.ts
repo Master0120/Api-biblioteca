@@ -6,11 +6,11 @@ const bootstrap = async (): Promise<void> => {
     await connectDB();
 
     app.listen(env.port, () => {
-        console.log(`Servidor corriendo en el puerto ${env.port} [${env.nodeEnv}]`);
+        console.log(`Server listening on port ${env.port} [${env.nodeEnv}]`);
     });
 };
 
 bootstrap().catch((error) => {
-    console.error("Error al iniciar la aplicación:", error);
+    console.error("Failed to start the application:", error);
     process.exit(1);
 });

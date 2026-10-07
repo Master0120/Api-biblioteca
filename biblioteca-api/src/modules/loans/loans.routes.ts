@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { asyncHandler } from "../../shared/middlewares/asyncHandler";
-import { AutoresController } from "./autores.controller";
+import { LoansController } from "./loans.controller";
 
 const router = Router();
-const controller = new AutoresController();
+const controller = new LoansController();
 
 router.post("/", asyncHandler(controller.create));
 router.get("/", asyncHandler(controller.findAll));

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { AutoresService } from "./autores.service";
+import { AuthorsService } from "./authors.service";
 
-export class AutoresController {
-    private readonly service = new AutoresService();
+export class AuthorsController {
+    private readonly service = new AuthorsService();
 
     create = async (req: Request, res: Response): Promise<void> => {
         res.status(201).json(await this.service.create(req.body));

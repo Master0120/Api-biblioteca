@@ -1,27 +1,27 @@
 import { Collection, ObjectId } from "mongodb";
 import { getDb } from "../../config/database";
-import { Prestamo } from "./prestamos.model";
+import { Loan } from "./loans.model";
 
-export class PrestamosRepository {
-    private collection(): Collection<Prestamo> {
-        return getDb().collection<Prestamo>("prestamos");
+export class LoansRepository {
+    private collection(): Collection<Loan> {
+        return getDb().collection<Loan>("prestamos");
     }
 
-    async create(data: Omit<Prestamo, "_id">): Promise<Prestamo> {
-        const result = await this.collection().insertOne(data as Prestamo);
+    async create(data: Omit<Loan, "_id">): Promise<Loan> {
+        const result = await this.collection().insertOne(data as Loan);
         return { _id: result.insertedId, ...data };
     }
 
-    async findAll(): Promise<Prestamo[]> {
+    async findAll(): Promise<Loan[]> {
         return this.collection().find().sort({ createdAt: -1 }).toArray();
     }
 
-    async findById(id: ObjectId): Promise<Prestamo | null> {
+    async findById(id: ObjectId): Promise<Loan | null> {
         return this.collection().findOne({ _id: id });
     }
 
-    async update(id: ObjectId, changes: Partial<Prestamo>, unsetReturnDate = false): Promise<Prestamo | null> {
-        const update: { $set: Partial<Prestamo>; $unset?: { returnDate: "" } } = { $set: changes };
+    async update(id: ObjectId, changes: Partial<Loan>, unsetReturnDate = false): Promise<Loan | null> {
+        const update: { $set: Partial<Loan>; $unset?: { returnDate: "" } } = { $set: changes };
         if (unsetReturnDate) update.$unset = { returnDate: "" };
         const result = await this.collection().updateOne({ _id: id }, update);
         return result.matchedCount ? this.findById(id) : null;

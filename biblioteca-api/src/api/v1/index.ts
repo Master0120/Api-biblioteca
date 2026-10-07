@@ -1,13 +1,13 @@
 import { Router } from "express";
-import authorRoutes from "../../modules/autores/autores.routes";
-import bookRoutes from "../../modules/libros/libros.routes";
-import loanRoutes from "../../modules/prestamos/prestamos.routes";
+import authorRoutes from "../../modules/authors/authors.routes";
+import bookRoutes from "../../modules/books/books.routes";
+import loanRoutes from "../../modules/loans/loans.routes";
 
 const router = Router();
 
-router.use("/autor", authorRoutes);
-router.use("/libro", bookRoutes);
-router.use("/prestamo", loanRoutes);
+router.use("/authors", authorRoutes);
+router.use("/books", bookRoutes);
+router.use("/loans", loanRoutes);
 
 export default router;
 // npm run dev

@@ -1,26 +1,26 @@
 import { Collection, ObjectId } from "mongodb";
 import { getDb } from "../../config/database";
-import { Autor } from "./autores.model";
+import { Author } from "./authors.model";
 
-export class AutoresRepository {
-    private collection(): Collection<Autor> {
-        return getDb().collection<Autor>("autores");
+export class AuthorsRepository {
+    private collection(): Collection<Author> {
+        return getDb().collection<Author>("autores");
     }
 
-    async create(data: Omit<Autor, "_id">): Promise<Autor> {
-        const result = await this.collection().insertOne(data as Autor);
+    async create(data: Omit<Author, "_id">): Promise<Author> {
+        const result = await this.collection().insertOne(data as Author);
         return { _id: result.insertedId, ...data };
     }
 
-    async findAll(): Promise<Autor[]> {
+    async findAll(): Promise<Author[]> {
         return this.collection().find().sort({ createdAt: -1 }).toArray();
     }
 
-    async findById(id: ObjectId): Promise<Autor | null> {
+    async findById(id: ObjectId): Promise<Author | null> {
         return this.collection().findOne({ _id: id });
     }
 
-    async update(id: ObjectId, changes: Partial<Autor>): Promise<Autor | null> {
+    async update(id: ObjectId, changes: Partial<Author>): Promise<Author | null> {
         const result = await this.collection().updateOne({ _id: id }, { $set: changes });
         return result.matchedCount ? this.findById(id) : null;
     }

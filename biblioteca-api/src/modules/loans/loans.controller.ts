@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { LibrosService } from "./libros.service";
+import { LoansService } from "./loans.service";
 
-export class LibrosController {
-    private readonly service = new LibrosService();
+export class LoansController {
+    private readonly service = new LoansService();
 
     create = async (req: Request, res: Response): Promise<void> => {
         res.status(201).json(await this.service.create(req.body));

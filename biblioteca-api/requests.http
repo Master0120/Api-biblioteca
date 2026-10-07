@@ -3,65 +3,65 @@
 @bookId = REPLACE_WITH_BOOK_ID
 @loanId = REPLACE_WITH_LOAN_ID
 
-### Crear autor
-POST {{baseUrl}}/autor
+### Create an author
+POST {{baseUrl}}/authors
 Content-Type: application/json
 
-{"name":"Gabriel García Márquez","nationality":"Colombiana","birthYear":1927}
+{"name":"Gabriel García Márquez","nationality":"Colombian","birthYear":1927}
 
-### Listar autores
-GET {{baseUrl}}/autor
+### List authors
+GET {{baseUrl}}/authors
 
-### Consultar autor
-GET {{baseUrl}}/autor/{{authorId}}
+### Get an author
+GET {{baseUrl}}/authors/{{authorId}}
 
-### Actualizar autor
-PUT {{baseUrl}}/autor/{{authorId}}
+### Update an author
+PUT {{baseUrl}}/authors/{{authorId}}
 Content-Type: application/json
 
-{"nationality":"Colombiana"}
+{"nationality":"Colombian"}
 
-### Crear libro
-POST {{baseUrl}}/libro
+### Create a book
+POST {{baseUrl}}/books
 Content-Type: application/json
 
-{"title":"Cien años de soledad","isbn":"9780307474728","authorId":"{{authorId}}","year":1967}
+{"title":"One Hundred Years of Solitude","isbn":"9780307474728","authorId":"{{authorId}}","year":1967}
 
-### Listar libros
-GET {{baseUrl}}/libro
+### List books
+GET {{baseUrl}}/books
 
-### Consultar libro
-GET {{baseUrl}}/libro/{{bookId}}
+### Get a book
+GET {{baseUrl}}/books/{{bookId}}
 
-### Actualizar libro
-PUT {{baseUrl}}/libro/{{bookId}}
+### Update a book
+PUT {{baseUrl}}/books/{{bookId}}
 Content-Type: application/json
 
-{"title":"Cien años de soledad (edición revisada)"}
+{"title":"One Hundred Years of Solitude (revised edition)"}
 
-### Crear préstamo
-POST {{baseUrl}}/prestamo
+### Create a loan
+POST {{baseUrl}}/loans
 Content-Type: application/json
 
-{"bookId":"{{bookId}}","userName":"Ana Pérez","loanDate":"2026-09-28T10:00:00.000Z"}
+{"bookId":"{{bookId}}","userName":"Ana Perez","loanDate":"2026-09-28T10:00:00.000Z"}
 
-### Listar préstamos
-GET {{baseUrl}}/prestamo
+### List loans
+GET {{baseUrl}}/loans
 
-### Consultar préstamo
-GET {{baseUrl}}/prestamo/{{loanId}}
+### Get a loan
+GET {{baseUrl}}/loans/{{loanId}}
 
-### Devolver préstamo
-PUT {{baseUrl}}/prestamo/{{loanId}}
+### Return a loan
+PUT {{baseUrl}}/loans/{{loanId}}
 Content-Type: application/json
 
 {"returned":true}
 
-### Eliminar préstamo
-DELETE {{baseUrl}}/prestamo/{{loanId}}
+### Delete a loan
+DELETE {{baseUrl}}/loans/{{loanId}}
 
-### Eliminar libro
-DELETE {{baseUrl}}/libro/{{bookId}}
+### Delete a book
+DELETE {{baseUrl}}/books/{{bookId}}
 
-### Eliminar autor
-DELETE {{baseUrl}}/autor/{{authorId}}
+### Delete an author
+DELETE {{baseUrl}}/authors/{{authorId}}

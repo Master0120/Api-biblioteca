@@ -3,19 +3,16 @@ import { AppError } from "../errors/AppError";
 import { env } from "../../config/env";
 
 /**
- * Middleware 404: se ejecuta cuando ninguna ruta coincidió.
- */
+/** Handles requests that do not match any route. */
 export const notFound = (req: Request, res: Response): void => {
     res.status(404).json({
         status: "error",
-        message: `Ruta no encontrada: ${req.method} ${req.originalUrl}`,
+        message: `Route not found: ${req.method} ${req.originalUrl}`,
     });
 };
 
 /**
- * Middleware centralizado de errores. Debe registrarse al final,
- * después de las rutas.
- */
+/** Centralized error middleware. Register it after all routes. */
 export const errorHandler = (
     err: Error,
     _req: Request,
@@ -26,7 +23,7 @@ export const errorHandler = (
     const message =
         err instanceof AppError || env.nodeEnv !== "production"
             ? err.message
-            : "Error interno del servidor";
+            : "Internal server error";
 
     if (statusCode >= 500) {
         console.error(err);
