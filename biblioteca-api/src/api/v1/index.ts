@@ -11,3 +11,8 @@ router.use("/loans", loanRoutes);
 
 export default router;
 // npm run dev
+//npm run build
+//node build/server.js
+
+// acomdar las carpetas
+
