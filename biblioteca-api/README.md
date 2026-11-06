@@ -59,7 +59,13 @@ From the repository root, install the API dependencies:
 npm install --prefix biblioteca-api
 ```
 
-Copy `biblioteca-api/.env.example` to `biblioteca-api/.env` and configure `MONGO_URI` if needed. The example uses local MongoDB. Existing local environment settings and MongoDB collections are kept compatible with existing data.
+Copy `biblioteca-api/.env.example` to `biblioteca-api/.env` and configure `MONGO_URI` for your MongoDB instance. In PowerShell, run:
+
+```powershell
+Copy-Item biblioteca-api/.env.example biblioteca-api/.env
+```
+
+The example uses local MongoDB (`mongodb://127.0.0.1:27017`); MongoDB must be running locally to use it. For MongoDB Atlas, replace `MONGO_URI` with your cluster connection string and a valid database user password. Keep credentials in `.env`, which is ignored by Git, and URL-encode special characters in the password. Atlas must also allow your IP address in Network Access.
 
 Run in development mode:
 

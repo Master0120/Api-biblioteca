@@ -16,5 +16,8 @@ export default router;
 //npm run build
 //node build/server.js
 
+//  git push origin main   / subir a git todo
+
 // acomdar las carpetas
 
+//npm --prefix .\Api-biblioteca-main run dev
