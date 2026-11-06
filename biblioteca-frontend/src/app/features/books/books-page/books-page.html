@@ -1,0 +1,109 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">CATÁLOGO</p>
+    <h1>Libros</h1>
+    <p class="muted">Consulta y administra el catálogo de la biblioteca.</p>
+  </div>
+  <button class="button button-primary" type="button" (click)="openCreate()">＋ Nuevo libro</button>
+</section>
+
+@if (successMessage) {
+  <div class="notice notice-success" role="status">{{ successMessage }}</div>
+}
+@if (errorMessage) {
+  <div class="notice notice-error" role="alert">{{ errorMessage }}</div>
+}
+
+<section class="metrics">
+  <article class="metric-card"><span>Libros en catálogo</span><strong>{{ books.length }}</strong></article>
+  <article class="metric-card"><span>Disponibles</span><strong>{{ availableCount }}</strong></article>
+  <article class="metric-card"><span>Autores</span><strong>{{ authors.length }}</strong></article>
+</section>
+
+<section class="panel">
+  <div class="panel-toolbar">
+    <div>
+      <h2>Todos los libros</h2>
+      <p class="muted">{{ filteredBooks.length }} de {{ books.length }} registros</p>
+    </div>
+    <label class="search">
+      <span class="sr-only">Buscar libros</span>
+      <input type="search" placeholder="Buscar título, ISBN o autor..." [(ngModel)]="search">
+    </label>
+  </div>
+
+  @if (loading) {
+    <p class="empty-state">Cargando catálogo...</p>
+  } @else if (filteredBooks.length === 0) {
+    <p class="empty-state">{{ search ? 'No hay libros que coincidan con la búsqueda.' : 'Aún no hay libros. Agrega el primero.' }}</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Libro</th><th>ISBN</th><th>Autor</th><th>Año</th><th>Estado</th><th class="actions-heading">Acciones</th></tr>
+        </thead>
+        <tbody>
+          @for (book of filteredBooks; track book._id) {
+            <tr>
+              <td><strong>{{ book.title }}</strong></td>
+              <td>{{ book.isbn }}</td>
+              <td>{{ authorName(book.authorId) }}</td>
+              <td>{{ book.year ?? '—' }}</td>
+              <td><span class="status" [class.status-available]="book.available" [class.status-unavailable]="!book.available">{{ book.available ? 'Disponible' : 'Prestado' }}</span></td>
+              <td class="actions">
+                <button class="button button-quiet" type="button" (click)="showDetails(book)">Ver</button>
+                <button class="button button-quiet" type="button" (click)="openEdit(book)">Editar</button>
+                <button class="button button-danger" type="button" (click)="delete(book)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (selectedBook; as book) {
+  <section class="detail-card">
+    <button class="close-button" type="button" aria-label="Cerrar detalle" (click)="selectedBook = null">×</button>
+    <p class="eyebrow">DETALLE DEL LIBRO</p>
+    <h2>{{ book.title }}</h2>
+    <p>ISBN {{ book.isbn }} · {{ authorName(book.authorId) }} · {{ book.year ?? 'Año no registrado' }}</p>
+    <small>ID: {{ book._id }}</small>
+  </section>
+}
+
+@if (modalOpen) {
+  <div class="modal-backdrop" (click)="modalOpen = false">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="book-form-title" (click)="$event.stopPropagation()">
+      <button class="close-button" type="button" aria-label="Cerrar" (click)="modalOpen = false">×</button>
+      <p class="eyebrow">CATÁLOGO</p>
+      <h2 id="book-form-title">{{ editingId ? 'Editar libro' : 'Nuevo libro' }}</h2>
+      <form (ngSubmit)="save()">
+        <label>Título
+          <input name="title" [(ngModel)]="form.title" required maxlength="180">
+        </label>
+        <label>ISBN
+          <input name="isbn" [(ngModel)]="form.isbn" required maxlength="30">
+        </label>
+        <label>Autor
+          <select name="authorId" [(ngModel)]="form.authorId" required>
+            <option value="" disabled>Selecciona un autor</option>
+            @for (author of authors; track author._id) {
+              <option [value]="author._id">{{ author.name }}</option>
+            }
+          </select>
+        </label>
+        <label>Año de publicación <span class="muted">(opcional)</span>
+          <input name="year" type="number" step="1" [(ngModel)]="form.year">
+        </label>
+        @if (errorMessage) { <p class="form-error" role="alert">{{ errorMessage }}</p> }
+        @if (authors.length === 0) { <p class="form-error">Primero registra un autor para poder crear un libro.</p> }
+        <div class="form-actions">
+          <button class="button button-quiet" type="button" (click)="modalOpen = false">Cancelar</button>
+          <button class="button button-primary" type="submit" [disabled]="saving || authors.length === 0">{{ saving ? 'Guardando...' : 'Guardar libro' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

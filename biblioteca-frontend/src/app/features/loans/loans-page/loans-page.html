@@ -1,0 +1,116 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">CIRCULACIÓN</p>
+    <h1>Préstamos</h1>
+    <p class="muted">Registra préstamos y devoluciones de libros.</p>
+  </div>
+  <button class="button button-primary" type="button" (click)="openCreate()">＋ Nuevo préstamo</button>
+</section>
+
+@if (successMessage) {
+  <div class="notice notice-success" role="status">{{ successMessage }}</div>
+}
+@if (errorMessage) {
+  <div class="notice notice-error" role="alert">{{ errorMessage }}</div>
+}
+
+<section class="metrics">
+  <article class="metric-card"><span>Préstamos registrados</span><strong>{{ loans.length }}</strong></article>
+  <article class="metric-card"><span>Activos</span><strong>{{ activeCount }}</strong></article>
+  <article class="metric-card"><span>Libros disponibles</span><strong>{{ availableBooks.length }}</strong></article>
+</section>
+
+<section class="panel">
+  <div class="panel-toolbar">
+    <div>
+      <h2>Historial de préstamos</h2>
+      <p class="muted">{{ filteredLoans.length }} de {{ loans.length }} registros</p>
+    </div>
+    <label class="search">
+      <span class="sr-only">Buscar préstamos</span>
+      <input type="search" placeholder="Buscar usuario o libro..." [(ngModel)]="search">
+    </label>
+  </div>
+
+  @if (loading) {
+    <p class="empty-state">Cargando préstamos...</p>
+  } @else if (filteredLoans.length === 0) {
+    <p class="empty-state">{{ search ? 'No hay préstamos que coincidan con la búsqueda.' : 'Aún no hay préstamos registrados.' }}</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Libro</th><th>Usuario</th><th>Fecha préstamo</th><th>Fecha devolución</th><th>Estado</th><th class="actions-heading">Acciones</th></tr>
+        </thead>
+        <tbody>
+          @for (loan of filteredLoans; track loan._id) {
+            <tr>
+              <td><strong>{{ bookTitle(loan.bookId) }}</strong></td>
+              <td>{{ loan.userName }}</td>
+              <td>{{ loan.loanDate | date:'mediumDate' }}</td>
+              <td>{{ loan.returnDate ? (loan.returnDate | date:'mediumDate') : '—' }}</td>
+              <td><span class="status" [class.status-returned]="loan.returned" [class.status-active]="!loan.returned">{{ loan.returned ? 'Devuelto' : 'Activo' }}</span></td>
+              <td class="actions">
+                <button class="button button-quiet" type="button" (click)="showDetails(loan)">Ver</button>
+                @if (!loan.returned) {
+                  <button class="button button-quiet" type="button" (click)="returnLoan(loan)">Devolver</button>
+                }
+                <button class="button button-quiet" type="button" (click)="openEdit(loan)">Editar</button>
+                <button class="button button-danger" type="button" (click)="delete(loan)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (selectedLoan; as loan) {
+  <section class="detail-card">
+    <button class="close-button" type="button" aria-label="Cerrar detalle" (click)="selectedLoan = null">×</button>
+    <p class="eyebrow">DETALLE DEL PRÉSTAMO</p>
+    <h2>{{ bookTitle(loan.bookId) }}</h2>
+    <p>Usuario: {{ loan.userName }} · Préstamo: {{ loan.loanDate | date:'mediumDate' }}</p>
+    <p>Estado: {{ loan.returned ? 'Devuelto' : 'Activo' }} · Devolución: {{ loan.returnDate ? (loan.returnDate | date:'mediumDate') : 'Pendiente' }}</p>
+    <small>ID: {{ loan._id }}</small>
+  </section>
+}
+
+@if (modalOpen) {
+  <div class="modal-backdrop" (click)="modalOpen = false">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="loan-form-title" (click)="$event.stopPropagation()">
+      <button class="close-button" type="button" aria-label="Cerrar" (click)="modalOpen = false">×</button>
+      <p class="eyebrow">CIRCULACIÓN</p>
+      <h2 id="loan-form-title">{{ editingId ? 'Editar préstamo' : 'Nuevo préstamo' }}</h2>
+      <form (ngSubmit)="save()">
+        @if (!editingId) {
+          <label>Libro disponible
+            <select name="bookId" [(ngModel)]="form.bookId" required>
+              <option value="" disabled>Selecciona un libro</option>
+              @for (book of availableBooks; track book._id) {
+                <option [value]="book._id">{{ book.title }}</option>
+              }
+            </select>
+          </label>
+        } @else {
+          <label>Libro
+            <input [value]="bookTitle(form.bookId)" disabled>
+          </label>
+        }
+        <label>Nombre del usuario
+          <input name="userName" [(ngModel)]="form.userName" required maxlength="120">
+        </label>
+        <label>Fecha del préstamo
+          <input name="loanDate" type="date" [(ngModel)]="form.loanDate" required>
+        </label>
+        @if (errorMessage) { <p class="form-error" role="alert">{{ errorMessage }}</p> }
+        @if (!editingId && availableBooks.length === 0) { <p class="form-error">No hay libros disponibles para prestar.</p> }
+        <div class="form-actions">
+          <button class="button button-quiet" type="button" (click)="modalOpen = false">Cancelar</button>
+          <button class="button button-primary" type="submit" [disabled]="saving || (!editingId && availableBooks.length === 0)">{{ saving ? 'Guardando...' : 'Guardar préstamo' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

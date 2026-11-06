@@ -1,0 +1,18 @@
+:host { display: block; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 5rem; padding: 0 clamp(1rem, 5vw, 4rem); border-bottom: 1px solid #e8e3d9; background: #fffdfa; }
+.brand { display: inline-flex; align-items: center; gap: .75rem; color: #293d30; text-decoration: none; }
+.brand-mark { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .75rem; background: #305b45; color: white; font-family: Georgia, serif; font-size: 1.35rem; font-weight: 700; }
+.brand strong, .brand small { display: block; }
+.brand strong { font-family: Georgia, serif; font-size: 1.05rem; }
+.brand small { margin-top: .13rem; color: #858178; font-size: .72rem; }
+nav { display: flex; align-items: center; gap: .35rem; }
+nav a { border-radius: .55rem; padding: .65rem .9rem; color: #68675f; font-size: .9rem; font-weight: 700; text-decoration: none; }
+nav a:hover, nav a.active { background: #edf2ed; color: #305b45; }
+.online { display: inline-flex; align-items: center; gap: .5rem; color: #65655e; font-size: .8rem; }
+.online span { width: .5rem; height: .5rem; border-radius: 50%; background: #58a36f; }
+@media (max-width: 650px) {
+  .topbar { flex-wrap: wrap; gap: .6rem; padding-block: .8rem; }
+  nav { order: 3; width: 100%; }
+  nav a { flex: 1; padding-inline: .5rem; text-align: center; }
+  .online { margin-left: auto; }
+}

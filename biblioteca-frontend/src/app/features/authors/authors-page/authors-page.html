@@ -1,0 +1,92 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">CATÁLOGO</p>
+    <h1>Autores</h1>
+    <p class="muted">Administra los autores registrados en la biblioteca.</p>
+  </div>
+  <button class="button button-primary" type="button" (click)="openCreate()">＋ Nuevo autor</button>
+</section>
+
+@if (successMessage) {
+  <div class="notice notice-success" role="status">{{ successMessage }}</div>
+}
+@if (errorMessage) {
+  <div class="notice notice-error" role="alert">{{ errorMessage }}</div>
+}
+
+<section class="panel">
+  <div class="panel-toolbar">
+    <div>
+      <h2>Directorio de autores</h2>
+      <p class="muted">{{ authors.length }} registros</p>
+    </div>
+    <label class="search">
+      <span class="sr-only">Buscar autores</span>
+      <input type="search" placeholder="Buscar autor..." [(ngModel)]="search">
+    </label>
+  </div>
+
+  @if (loading) {
+    <p class="empty-state">Cargando autores...</p>
+  } @else if (filteredAuthors.length === 0) {
+    <p class="empty-state">{{ search ? 'No hay autores que coincidan con la búsqueda.' : 'Aún no hay autores. Crea el primero.' }}</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Nombre</th><th>Nacionalidad</th><th>Año de nacimiento</th><th class="actions-heading">Acciones</th></tr>
+        </thead>
+        <tbody>
+          @for (author of filteredAuthors; track author._id) {
+            <tr>
+              <td><strong>{{ author.name }}</strong></td>
+              <td>{{ author.nationality }}</td>
+              <td>{{ author.birthYear ?? '—' }}</td>
+              <td class="actions">
+                <button class="button button-quiet" type="button" (click)="showDetails(author)">Ver</button>
+                <button class="button button-quiet" type="button" (click)="openEdit(author)">Editar</button>
+                <button class="button button-danger" type="button" (click)="delete(author)">Eliminar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
+
+@if (selectedAuthor; as author) {
+  <section class="detail-card">
+    <button class="close-button" type="button" aria-label="Cerrar detalle" (click)="selectedAuthor = null">×</button>
+    <p class="eyebrow">DETALLE DEL AUTOR</p>
+    <h2>{{ author.name }}</h2>
+    <p>{{ author.nationality }} · {{ author.birthYear ?? 'Año no registrado' }}</p>
+    <small>ID: {{ author._id }}</small>
+  </section>
+}
+
+@if (modalOpen) {
+  <div class="modal-backdrop" (click)="modalOpen = false">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="author-form-title" (click)="$event.stopPropagation()">
+      <button class="close-button" type="button" aria-label="Cerrar" (click)="modalOpen = false">×</button>
+      <p class="eyebrow">AUTORES</p>
+      <h2 id="author-form-title">{{ editingId ? 'Editar autor' : 'Nuevo autor' }}</h2>
+      <form (ngSubmit)="save()">
+        <label>Nombre
+          <input name="name" [(ngModel)]="form.name" required maxlength="120">
+        </label>
+        <label>Nacionalidad
+          <input name="nationality" [(ngModel)]="form.nationality" required maxlength="80">
+        </label>
+        <label>Año de nacimiento <span class="muted">(opcional)</span>
+          <input name="birthYear" type="number" min="1" step="1" [(ngModel)]="form.birthYear">
+        </label>
+        @if (errorMessage) { <p class="form-error" role="alert">{{ errorMessage }}</p> }
+        <div class="form-actions">
+          <button class="button button-quiet" type="button" (click)="modalOpen = false">Cancelar</button>
+          <button class="button button-primary" type="submit" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar autor' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

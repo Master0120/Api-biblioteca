@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "npm --prefix biblioteca-api run dev",
     "build": "npm --prefix biblioteca-api run build",
-    "start": "npm --prefix biblioteca-api start"
+    "start": "npm --prefix biblioteca-api start",
+    "dev:frontend": "npm --prefix biblioteca-frontend start",
+    "build:frontend": "npm --prefix biblioteca-frontend run build",
+    "test:frontend": "npm --prefix biblioteca-frontend test"
   }
 }
