@@ -12,6 +12,8 @@ router.use("/categories", categoryRoutes);
 router.use("/loans", loanRoutes);
 
 export default router;
+
+// hola si
 // npm run dev
 //npm run build
 //node build/server.js

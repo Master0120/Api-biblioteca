@@ -25,6 +25,39 @@ La aplicación se abre en `http://localhost:4200`. Para trabajar con la API loca
 - Préstamos: listado, consulta por ID, creación, edición de usuario/fecha, devolución y eliminación.
 - La API administra la disponibilidad del libro al crear/devolver/eliminar préstamos.
 
+## Organización del frontend
+
+La aplicación mantiene separados los modelos, servicios y páginas por funcionalidad, y reserva `shared/ui` para componentes reutilizables:
+
+```text
+src/app/
+├── app.ts
+├── app.config.ts
+├── app.routes.ts
+├── features/
+│   ├── authors/
+│   │   ├── authors-page/
+│   │   ├── models/author.model.ts
+│   │   └── services/author.service.ts
+│   ├── books/
+│   │   ├── books-page/
+│   │   ├── models/book.model.ts
+│   │   └── services/book.service.ts
+│   └── loans/
+│       ├── loans-page/
+│       ├── models/loan.model.ts
+│       └── services/loan.service.ts
+└── shared/
+    ├── ui/
+    │   ├── header/
+    │   └── footer/
+    └── utils/
+```
+
+En libros, `book.model.ts` define `Book` y `BookDTO`; `book.service.ts` centraliza las solicitudes HTTP y `books-page` presenta la vista y sus formularios. Autores y préstamos siguen el mismo patrón. `app.config.ts` configura el router y `HttpClient`, y `app.routes.ts` conecta las tres páginas.
+
+El encabezado y el pie se muestran desde `app.ts`, alrededor del `RouterOutlet`, para que estén disponibles en todas las rutas. Por eso `BooksPage` no importa el encabezado directamente. Esta organización conserva la separación del ejemplo y también las páginas de autores y préstamos que ya forman parte de la aplicación.
+
 ## Validación
 
 ```powershell
