@@ -1,3 +1,7 @@
+//administra la pantalla de libros. Carga libros y autores, filtra la lista,
+//  muestra detalles y controla los formularios para crear y editar. 
+// También permite eliminar, muestra estados de carga y presenta mensajes de éxito o error.
+
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';

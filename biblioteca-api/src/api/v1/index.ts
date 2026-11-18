@@ -15,6 +15,7 @@ export default router;
 
 // hola si
 // npm run dev
+// npm run dev:frontend
 //npm run build
 //node build/server.js
 
@@ -23,3 +24,7 @@ export default router;
 // acomdar las carpetas
 
 //npm --prefix .\Api-biblioteca-main run dev
+
+
+//npm run dev
+//npm run dev:frontend
